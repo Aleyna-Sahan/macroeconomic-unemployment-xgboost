@@ -1,4 +1,3 @@
-cat << 'EOF' > README.md
 # 📈 Macroeconomic Unemployment Rate Prediction with XGBoost
 
 An empirical machine learning and econometric panel data study evaluating non-linear relationships between macroeconomic aggregates (CPI, Industrial Production, Discount Rate) and national unemployment rates across 8 structurally diverse economies (2000–2024).
