@@ -1,73 +1,80 @@
+cat << 'EOF' > README.md
 # 📈 Macroeconomic Unemployment Rate Prediction with XGBoost
 
-> **Lisans Bitirme Projesi** — Farklı gelişmişlik düzeylerindeki ülkelerin makroekonomik göstergeleri kullanılarak işsizlik oranının XGBoost algoritması ile tahmini ve açıklayıcı analizi.
-
-## 📌 Proje Özeti
-Bu çalışma; gelişmiş (ABD, Almanya, Güney Kore) ve gelişmekte olan (Brezilya vb.) ülkelerin 2000–2025 dönemini kapsayan 25 yıllık verilerini temel alarak, makroekonomik göstergeler ile işsizlik oranı arasındaki doğrusal olmayan (non-linear) karmaşık ilişkileri haritalandırmayı amaçlamaktadır.
-
-Klasik ekonometrik modellerin asimetrik şokları ve yüksek varyansı yakalamadaki yetersizliğine alternatif olarak, düzenlileştirme (regularization) yeteneğine sahip **Extreme Gradient Boosting (XGBoost)** algoritması kullanılmıştır.
+An empirical machine learning and econometric panel data study evaluating non-linear relationships between macroeconomic aggregates (CPI, Industrial Production, Discount Rate) and national unemployment rates across 8 structurally diverse economies (2000–2024).
 
 ---
 
-## 📊 Veri Seti & Değişkenler
-Veriler **Federal Reserve Economic Data (FRED)** üzerinden aylık bazda temin edilmiştir:
-- **Bağımlı Değişken:** `ISSIZLIK` — İşsizlik Oranı (%)
-- **Bağımsız Değişkenler:**
-  - `TUFE` — Tüketici Fiyat Endeksi (Enflasyon ve satın alma gücü)
-  - `SURETIM` — Sanayi Üretim Endeksi (Ekonomik üretim kapasitesi)
-  - `ISFAIZ` — İskonto Faizi (Yatırım maliyeti ve sermaye akışı için Proxy değişken)
-  - `Ülke Değişkenleri` — Yapısal farklılıkları temsil eden One-Hot Encoded kukla değişkenler
+## 📌 Research Overview & Core Findings
+> **Core Hypothesis:** Is national unemployment driven primarily by universal macroeconomic rules or by country-specific structural institutions?
+
+* **Exceptional Predictive Accuracy:** A hyperparameter-optimized XGBoost regression pipeline captured non-linear structural shocks across economies, achieving an **$R^2$ of 0.99**, an **MAE of 0.17**, and an **RMSE of 0.28** on test splits.
+* **Empirical Feature Attribution:** Country dummy variables (Poland, South Korea, Turkey) dominated feature importance rankings, proving that localized structural dynamics and labor institutional flexibility outweigh universal aggregates like CPI and Industrial Production in explaining employment variance.
 
 ---
 
-## ⚙️ Model Mimarisi & Hiperparametreler
-Model, aşırı öğrenmeyi (overfitting) engellemek amacıyla erken durdurma (early stopping) ve alt örnekleme kurallarıyla eğitilmiştir:
+## 📊 Benchmark & Evaluation Results
 
-| Parametre | Değer | Açıklama |
-| :--- | :--- | :--- |
-| **Learning Rate** | `0.05` | Adım küçültme ve genelleştirme kontrolü |
-| **N Estimators** | `1000` | Sıralı ağaç sayısı |
-| **Max Depth** | `6` | Ağaç derinlik limiti |
-| **Subsample** | `0.80` | Rastgele veri örneklem oranı |
-| **Colsample Bytree**| `0.80` | Rastgele öznitelik örneklem oranı |
-| **Early Stopping** | `50` | İyileşme durduğunda eğitimi kesme eşiği |
+| Metric | Score | Description |
+| :--- | :---: | :--- |
+| **Coefficient of Determination ($R^2$)** | **0.99** | Explains 99% of total variance across multi-country panel observations |
+| **Mean Absolute Error (MAE)** | **0.17** | Average absolute deviation of predicted unemployment rate |
+| **Root Mean Squared Error (RMSE)** | **0.28** | Penalized error metric for large idiosyncratic forecasting outliers |
 
----
-
-## 🎯 Model Performansı ve Bulgular
-
-Model %80 Eğitim / %20 Test bölünmesi ile test seti üzerinde değerlendirilmiş ve şu metrikler elde edilmiştir:
-
-| Metrik | Değer | Yorum |
-| :--- | :--- | :--- |
-| **$R^2$ (Belirlilik Katsayısı)** | **%96.69** (0.9669) | Model değişkenlerin varyansını başarıyla açıklamaktadır |
-| **MAE (Ortalama Mutlak Hata)** | **0.2024** | Gerçek işsizlik değerinden yalnızca ~0.20 puan sapma |
-| **RMSE** | **0.4973** | Ceza ağırlıklı kök ortalama kare hata |
-
-### 🔍 Temel Bulgular (Özellik Önemi - Feature Importance)
-1. **En Belirleyici Faktör (TÜFE):** Model karar mekanizmasında en yüksek bilgi kazancını (information gain) Tüketici Fiyat Endeksi elde etmiş; enflasyonist şokların istihdam üzerindeki baskınlığı doğrulanmıştır.
-2. **Yapısal Ülke Etkisi:** Güney Kore kukla değişkeni ikinci en yüksek öneme sahip olmuştur; ülkenin teknoloji odaklı sanayi ve istikrarlı işgücü yapısının küresel şoklara karşı koruyucu bir yapı oluşturduğu gözlemlenmiştir.
+### Hyperparameter Configuration
+* `learning_rate`: 0.05
+* `n_estimators`: 1,000
+* `max_depth`: 6
+* `subsample`: 0.80
+* `colsample_bytree`: 0.80
+* `early_stopping_rounds`: 50
 
 ---
 
-## 📂 Proje Çıktıları & Grafikler
+## 📉 Visualizations & Results
 
-### 1. Korelasyon Matrisi (Isı Haritası)
-![Correlation Matrix](results/figures/correlation_heatmap.png)
+### 1. Actual vs. Predicted Unemployment (Across 8 Countries)
+Ground truth historical rates vs. model predictions across divergent economic trajectories:
+![Actual vs Predicted](assets/actual_vs_predicted.png)
 
-### 2. Özellik Önemi (Feature Importance)
-![Feature Importance](results/figures/feature_importance.png)
+### 2. Feature Importance (Information Gain)
+Dominance of country-specific fixed effects over universal macroeconomic aggregates:
+![Feature Importance](assets/feature_importance.png)
+
+### 3. Macroeconomic Correlation Matrix
+Correlation heatmap between unemployment, discount rates, industrial output, and inflation:
+![Correlation Matrix](assets/correlation_matrix.png)
 
 ---
 
-## 🚀 Çalıştırma
+## 📁 Dataset Details
+* **Source:** Federal Reserve Bank of St. Louis (FRED)
+* **Time Span:** Monthly panel data from 2000 to 2024
+* **Countries (8):** USA, Germany, Brazil, South Korea, Japan, Mexico, Poland, Turkey
+* **Key Indicators:**
+  * **Target:** `ISSIZLIK` (Unemployment Rate %)
+  * **Predictors:** 
+    * `TUFE`: Consumer Price Index (CPI)
+    * `SURETIM`: Industrial Production Index
+    * `ISFAIZ`: Discount Rate (Investment Cost Proxy)
+    * Country-specific dummy encodings (One-Hot Encoded)
 
-```bash
-# Repoyu klonlayın
-git clone [https://github.com/Aleyna-Sahan/macroeconomic-unemployment-xgboost.git](https://github.com/Aleyna-Sahan/macroeconomic-unemployment-xgboost.git)
+---
 
-# Bağımlılıkları yükleyin
-pip install -r requirements.txt
-
-# Notebook'u çalıştırın
-jupyter notebook notebooks/unemployment_prediction_xgboost.ipynb
+## 📂 Repository Layout
+```text
+macroeconomic-unemployment-xgboost/
+├── assets/
+│   ├── actual_vs_predicted.png       # 8-country comparative time series plots
+│   ├── feature_importance.png        # XGBoost information gain rankings
+│   └── correlation_matrix.png        # Cross-indicator correlation heatmap
+├── data/
+│   ├── processed/
+│   │   └── hepsi_bir_arada_ulkeler_verisi.csv # Cleaned & merged panel data
+│   └── raw/                          # Country-level raw monthly CSVs from FRED
+├── notebooks/
+│   └── macroeconomic_analysis.ipynb  # End-to-end data processing, EDA & XGBoost modeling
+├── reports/
+│   └── Aleyna_Sahan_VeriAnalizi.pdf  # Full academic thesis documentation
+├── requirements.txt                  # Python dependencies
+└── README.md
